@@ -12,32 +12,30 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: 'Valid email required' });
   }
 
-  // Mailchimp API credentials from environment variables
-  const MAILCHIMP_API_KEY = process.env.MAILCHIMP_API_KEY;
-  const MAILCHIMP_LIST_ID = process.env.MAILCHIMP_LIST_ID;
-  const MAILCHIMP_SERVER_PREFIX = process.env.MAILCHIMP_SERVER_PREFIX; // e.g., "us21"
+  // MailerLite API credentials from environment variables
+  const MAILERLITE_API_KEY = process.env.MAILERLITE_API_KEY;
+  const MAILERLITE_GROUP_ID = process.env.MAILERLITE_GROUP_ID;
 
-  if (!MAILCHIMP_API_KEY || !MAILCHIMP_LIST_ID || !MAILCHIMP_SERVER_PREFIX) {
-    console.error('Mailchimp credentials not configured');
+  if (!MAILERLITE_API_KEY || !MAILERLITE_GROUP_ID) {
+    console.error('MailerLite credentials not configured');
     return res.status(500).json({ error: 'Server configuration error' });
   }
 
   try {
-    // Mailchimp API endpoint
-    const url = `https://${MAILCHIMP_SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${MAILCHIMP_LIST_ID}/members`;
+    // MailerLite API endpoint
+    const url = 'https://connect.mailerlite.com/api/subscribers';
 
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Basic ${Buffer.from(`anystring:${MAILCHIMP_API_KEY}`).toString('base64')}`,
+        'Authorization': `Bearer ${MAILERLITE_API_KEY}`,
       },
       body: JSON.stringify({
-        email_address: email,
-        status: 'subscribed', // or 'pending' for double opt-in
-        tags: ['FASTLANDZ'], // Optional: tag subscribers
-        merge_fields: {
-          SOURCE: 'Landing Page',
+        email: email,
+        groups: [MAILERLITE_GROUP_ID],
+        fields: {
+          source: 'Landing Page',
         },
       }),
     });
@@ -46,12 +44,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (!response.ok) {
       // Check if user already subscribed
-      if (data.title === 'Member Exists') {
+      if (response.status === 422 || data.message?.includes('already exists')) {
         return res.status(200).json({ message: 'Already subscribed!' });
       }
 
-      console.error('Mailchimp error:', data);
-      return res.status(400).json({ error: data.detail || 'Subscription failed' });
+      console.error('MailerLite error:', data);
+      return res.status(400).json({ error: data.message || 'Subscription failed' });
     }
 
     return res.status(200).json({ message: 'Successfully subscribed!' });
