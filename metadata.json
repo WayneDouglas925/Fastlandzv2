@@ -1,0 +1,7 @@
+{
+  "name": "FASTLANDZ: Survival Chronicles",
+  "description": "A gamified 7-day intermittent fasting RPG set in a post-apocalyptic wasteland. Track your fasts, unlock survival intel, and level up your metabolic engine.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
