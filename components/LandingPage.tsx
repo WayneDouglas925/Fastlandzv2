@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import Logo from './Logo';
 
 interface LandingPageProps {
@@ -7,6 +7,39 @@ interface LandingPageProps {
 }
 
 const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
+  const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || isSubmitting) return;
+
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    try {
+      // Mailchimp form submission
+      // You'll need to replace this URL with your actual Mailchimp form action URL
+      const response = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      if (response.ok) {
+        setSubmitStatus('success');
+        setEmail('');
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch (error) {
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#050a05] text-white selection:bg-green-500 selection:text-black font-sans overflow-x-hidden">
       {/* CRT Overlay Effect */}
@@ -221,7 +254,51 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
               <h2 className="text-5xl font-black italic font-mono uppercase leading-none">THE OASIS <br/> IS WAITING.</h2>
               <p className="text-slate-500 uppercase font-mono text-xs tracking-widest">Join 10,241 Survivors already in the field.</p>
             </div>
-            <button 
+
+            {/* Email Capture */}
+            <div className="bg-green-900/10 border border-green-500/30 rounded-2xl p-6 space-y-4">
+              <h3 className="text-lg font-black uppercase font-mono text-green-500">
+                GET UPDATES + BONUS SURVIVAL INTEL
+              </h3>
+              <p className="text-sm text-slate-400">
+                Join the mission brief. Early access to new challenges, exclusive metabolic science, and community survival tips.
+              </p>
+              <form onSubmit={handleEmailSubmit} className="space-y-3">
+                <div className="flex gap-2">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="your.email@wasteland.com"
+                    required
+                    disabled={isSubmitting}
+                    className="flex-1 px-4 py-3 bg-black/50 border border-green-900/30 rounded-lg text-white placeholder-slate-600 font-mono text-sm focus:outline-none focus:border-green-500 transition-colors disabled:opacity-50"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || !email}
+                    className="px-6 py-3 bg-green-500 text-black font-bold uppercase font-mono text-xs tracking-widest rounded-lg hover:bg-green-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? 'SENDING...' : 'SUBSCRIBE'}
+                  </button>
+                </div>
+                {submitStatus === 'success' && (
+                  <p className="text-green-500 text-sm font-mono">
+                    ✓ TRANSMISSION RECEIVED. Check your inbox.
+                  </p>
+                )}
+                {submitStatus === 'error' && (
+                  <p className="text-red-500 text-sm font-mono">
+                    ✗ SIGNAL LOST. Please try again.
+                  </p>
+                )}
+              </form>
+              <p className="text-[10px] text-slate-600 font-mono">
+                No spam. Unsubscribe anytime. Your data is secure.
+              </p>
+            </div>
+
+            <button
               onClick={onStart}
               className="w-full bg-green-500 text-black py-6 rounded-2xl font-black uppercase tracking-[0.3em] font-mono text-2xl transition-all shadow-[0_0_60px_rgba(34,197,94,0.3)] hover:scale-105"
             >
