@@ -26,6 +26,12 @@ const FastingTimer: React.FC<FastingTimerProps> = ({ session, onStart, onEnd }) 
         
         setTimeLeft(Math.max(0, remaining));
         setProgress(currentProgress);
+
+        // Auto-complete when timer reaches 0
+        if (remaining <= 0 && currentProgress >= 100) {
+          clearInterval(interval);
+          setTimeout(() => onEnd(), 500); // Small delay for UX
+        }
       };
 
       update();
@@ -35,7 +41,7 @@ const FastingTimer: React.FC<FastingTimerProps> = ({ session, onStart, onEnd }) 
       setProgress(0);
     }
     return () => clearInterval(interval);
-  }, [session]);
+  }, [session, onEnd]);
 
   const formatTime = (ms: number) => {
     const hours = Math.floor(ms / 3600000);
@@ -134,9 +140,9 @@ const FastingTimer: React.FC<FastingTimerProps> = ({ session, onStart, onEnd }) 
       <div className="mt-6 flex gap-4 w-full">
          <button 
            onClick={onEnd}
-           className="flex-1 bg-black border border-red-900/30 text-red-900/60 hover:text-red-500 hover:border-red-500 transition-all py-3 rounded-xl font-black uppercase font-mono text-[10px] tracking-widest"
+           className={`flex-1 ${timeLeft <= 0 ? 'bg-green-500 text-black shadow-[0_0_30px_rgba(34,197,94,0.4)] hover:scale-105' : 'bg-black border border-red-900/30 text-red-900/60 hover:text-red-500 hover:border-red-500'} transition-all py-3 rounded-xl font-black uppercase font-mono text-[10px] tracking-widest`}
          >
-           End Early
+           {timeLeft <= 0 ? 'Mission Complete' : 'End Early'}
          </button>
          <button 
            className="flex-[1.5] bg-green-500/10 border border-green-500/30 text-green-500 py-3 rounded-xl font-black uppercase font-mono text-[10px] tracking-widest hover:bg-green-500/20"
