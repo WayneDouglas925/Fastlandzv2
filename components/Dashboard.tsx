@@ -39,9 +39,10 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   const isFasting = session?.status === 'FASTING';
   const habitCompleted = user.completedHabits.includes(dayConfig.dayNumber.toString());
+  const fastCompleted = (user.completedFasts || []).includes(dayConfig.dayNumber.toString());
 
   const handleHabitComplete = () => {
-    if (!habitCompleted) {
+    if (!habitCompleted && fastCompleted) {
       onCompleteHabit();
       setShowCelebration(true);
       setTimeout(() => setShowCelebration(false), 3000);
@@ -54,7 +55,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   };
 
   return (
-    <div className="space-y-8 pb-12 animate-in fade-in duration-700 relative">
+    <div className="space-y-8 animate-in fade-in duration-700 relative">
       {/* Celebration Overlay */}
       {showCelebration && (
         <div className="fixed inset-0 z-[100] pointer-events-none flex items-center justify-center overflow-hidden">
@@ -131,13 +132,11 @@ const Dashboard: React.FC<DashboardProps> = ({
             </div>
           </div>
 
-          {dayConfig.dayNumber === 3 && (
-            <WaterTracker 
-              currentCups={user.waterRations} 
-              targetCups={8} 
-              onUpdate={onUpdateWater} 
-            />
-          )}
+          <WaterTracker
+            currentCups={user.waterRations}
+            targetCups={8}
+            onUpdate={onUpdateWater}
+          />
 
           {!isFasting && (
             <div className="bg-black/40 border border-green-900/30 p-8 rounded-[2rem] space-y-6">
@@ -255,11 +254,29 @@ const Dashboard: React.FC<DashboardProps> = ({
         </div>
       </div>
 
-      <div className="pt-8 border-t border-green-900/30 flex justify-center">
-         <button 
+      <div className="pt-8 border-t border-green-900/30 flex flex-col items-center gap-4">
+         {!fastCompleted && (
+           <div className="text-center space-y-2">
+             <div className="flex items-center gap-2 justify-center">
+               <svg className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+               </svg>
+               <p className="text-sm font-mono text-yellow-500 uppercase tracking-wider">
+                 Complete your {dayConfig.fastDuration}-hour fast to unlock mission rewards
+               </p>
+             </div>
+           </div>
+         )}
+         <button
            onClick={handleHabitComplete}
-           disabled={habitCompleted}
-           className={`px-12 py-4 rounded-full font-black uppercase font-mono tracking-[0.3em] transition-all ${habitCompleted ? 'bg-green-900/20 text-green-900 cursor-not-allowed border border-green-900/30' : 'bg-green-500 text-black shadow-[0_0_30px_rgba(34,197,94,0.3)] hover:scale-105 active:scale-95'}`}
+           disabled={habitCompleted || !fastCompleted}
+           className={`px-12 py-4 rounded-full font-black uppercase font-mono tracking-[0.3em] transition-all ${
+             habitCompleted
+               ? 'bg-green-900/20 text-green-900 cursor-not-allowed border border-green-900/30'
+               : !fastCompleted
+               ? 'bg-slate-800/50 text-slate-600 cursor-not-allowed border border-slate-800/30'
+               : 'bg-green-500 text-black shadow-[0_0_30px_rgba(34,197,94,0.3)] hover:scale-105 active:scale-95'
+           }`}
          >
            {habitCompleted ? 'Mission Protocol Secured' : `Complete Day ${dayConfig.dayNumber} Mission`}
          </button>

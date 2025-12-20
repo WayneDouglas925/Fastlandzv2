@@ -60,6 +60,26 @@ const FastingTimer: React.FC<FastingTimerProps> = ({ session, onStart, onEnd }) 
 
   const status = getBodyStatus();
 
+  // Format times for display
+  const formatDisplayTime = (isoString: string) => {
+    const date = new Date(isoString);
+    return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+  };
+
+  const formatDisplayDate = (isoString: string) => {
+    const date = new Date(isoString);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    if (date.toDateString() === today.toDateString()) return 'Today';
+    if (date.toDateString() === yesterday.toDateString()) return 'Yesterday';
+    if (date.toDateString() === tomorrow.toDateString()) return 'Tomorrow';
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+
   return (
     <div className="flex flex-col items-center justify-center p-8 bg-black/60 border-2 border-green-500/20 rounded-[2.5rem] relative overflow-hidden animate-in zoom-in duration-500">
       {/* HUD Details */}
@@ -131,23 +151,18 @@ const FastingTimer: React.FC<FastingTimerProps> = ({ session, onStart, onEnd }) 
       </div>
 
       <div className="mt-8 grid grid-cols-4 gap-2 w-full">
-         <HudCard label="Start Time" value="8:00 PM" sub="Yesterday" />
-         <HudCard label="Target End" value="12:00 PM" sub="Today" />
-         <HudCard label="Fast Type" value="Warrior" sub="Level 1" />
+         <HudCard label="Start Time" value={session ? formatDisplayTime(session.startTime) : '--'} sub={session ? formatDisplayDate(session.startTime) : ''} />
+         <HudCard label="Target End" value={session ? formatDisplayTime(session.targetEndTime) : '--'} sub={session ? formatDisplayDate(session.targetEndTime) : ''} />
+         <HudCard label="Fast Type" value="Warrior" sub={`Day ${session?.dayNumber || 1}`} />
          <HudCard label="Status" value="Fasting" color="text-green-500" />
       </div>
 
-      <div className="mt-6 flex gap-4 w-full">
-         <button 
+      <div className="mt-6 w-full">
+         <button
            onClick={onEnd}
-           className={`flex-1 ${timeLeft <= 0 ? 'bg-green-500 text-black shadow-[0_0_30px_rgba(34,197,94,0.4)] hover:scale-105' : 'bg-black border border-red-900/30 text-red-900/60 hover:text-red-500 hover:border-red-500'} transition-all py-3 rounded-xl font-black uppercase font-mono text-[10px] tracking-widest`}
+           className={`w-full ${timeLeft <= 0 ? 'bg-green-500 text-black shadow-[0_0_30px_rgba(34,197,94,0.4)] hover:scale-105' : 'bg-black border border-red-900/30 text-red-900/60 hover:text-red-500 hover:border-red-500'} transition-all py-4 rounded-xl font-black uppercase font-mono text-sm tracking-widest`}
          >
-           {timeLeft <= 0 ? 'Mission Complete' : 'End Early'}
-         </button>
-         <button 
-           className="flex-[1.5] bg-green-500/10 border border-green-500/30 text-green-500 py-3 rounded-xl font-black uppercase font-mono text-[10px] tracking-widest hover:bg-green-500/20"
-         >
-           Log Feelings
+           {timeLeft <= 0 ? '✓ Mission Complete' : 'Abort Mission Early'}
          </button>
       </div>
     </div>

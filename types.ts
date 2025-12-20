@@ -23,10 +23,11 @@ export interface UserProfile {
   level: number;
   hasOnboarded: boolean;
   streak: number;
-  completedHabits: string[]; 
-  completedObjectives: string[]; 
-  waterRations: number; 
-  dailyLogs: Record<string, DailyLog>; 
+  completedHabits: string[];
+  completedObjectives: string[];
+  waterRations: number;
+  dailyLogs: Record<string, DailyLog>;
+  completedFasts?: string[]; // Track which day's fasts were completed
 }
 
 export interface DayConfig {

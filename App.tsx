@@ -18,39 +18,125 @@ const App: React.FC = () => {
   const [selectedMapDay, setSelectedMapDay] = useState<number | null>(null);
   const [showVictory, setShowVictory] = useState(false);
   const [showDeepDive, setShowDeepDive] = useState(false);
+  const [showUnlockCelebration, setShowUnlockCelebration] = useState(false);
+  const [unlockedDay, setUnlockedDay] = useState<number | null>(null);
 
   useEffect(() => {
-    const savedUser = localStorage.getItem('fastlandz_user');
-    const savedSession = localStorage.getItem('fastlandz_session');
-    
-    if (savedUser) {
-      const parsedUser = JSON.parse(savedUser);
-      setUser(parsedUser);
-      if (parsedUser.hasOnboarded) {
-        setShowLanding(false);
+    try {
+      const savedUser = localStorage.getItem('fastlandz_user');
+      const savedSession = localStorage.getItem('fastlandz_session');
+
+      if (savedUser) {
+        try {
+          const parsedUser = JSON.parse(savedUser);
+          setUser(parsedUser);
+          if (parsedUser.hasOnboarded) {
+            setShowLanding(false);
+          }
+        } catch (parseError) {
+          console.error('Failed to parse user data:', parseError);
+          localStorage.removeItem('fastlandz_user');
+        }
       }
+
+      if (savedSession) {
+        try {
+          setSession(JSON.parse(savedSession));
+        } catch (parseError) {
+          console.error('Failed to parse session data:', parseError);
+          localStorage.removeItem('fastlandz_session');
+        }
+      }
+    } catch (error) {
+      console.error('Failed to access localStorage:', error);
+    } finally {
+      setLoading(false);
     }
-    if (savedSession) {
-      setSession(JSON.parse(savedSession));
-    }
-    setLoading(false);
   }, []);
 
   useEffect(() => {
-    if (user) localStorage.setItem('fastlandz_user', JSON.stringify(user));
+    if (user) {
+      try {
+        localStorage.setItem('fastlandz_user', JSON.stringify(user));
+      } catch (error) {
+        console.error('Failed to save user data:', error);
+      }
+    }
   }, [user]);
 
   useEffect(() => {
-    if (session) localStorage.setItem('fastlandz_session', JSON.stringify(session));
-    else localStorage.removeItem('fastlandz_session');
+    try {
+      if (session) {
+        localStorage.setItem('fastlandz_session', JSON.stringify(session));
+      } else {
+        localStorage.removeItem('fastlandz_session');
+      }
+    } catch (error) {
+      console.error('Failed to save session data:', error);
+    }
   }, [session]);
 
+  const handleMissionSuccess = () => {
+    if (!user) return;
+    const isDay7 = user.currentDay === 7;
+    const willUnlockNewDay = !isDay7;
+
+    setUser(prev => {
+      if (!prev) return null;
+      const nextDay = Math.min(7, prev.currentDay + (isDay7 ? 0 : 1));
+      const currentDayKey = prev.currentDay.toString();
+
+      // Mark current day's fast as completed
+      const completedFasts = prev.completedFasts || [];
+      const updatedCompletedFasts = completedFasts.includes(currentDayKey)
+        ? completedFasts
+        : [...completedFasts, currentDayKey];
+
+      // Increment streak if this day's habit was completed
+      const newStreak = prev.completedHabits.includes(currentDayKey) ? prev.streak + 1 : prev.streak;
+
+      return {
+        ...prev,
+        xp: prev.xp + 100,
+        level: Math.floor((prev.xp + 100) / 1000) + 1,
+        currentDay: nextDay,
+        streak: newStreak,
+        waterRations: 0,
+        completedFasts: updatedCompletedFasts
+      };
+    });
+
+    if (isDay7) {
+      setShowVictory(true);
+    } else if (willUnlockNewDay) {
+      // Show unlock celebration for next day
+      setUnlockedDay(user.currentDay + 1);
+      setShowUnlockCelebration(true);
+      setTimeout(() => setShowUnlockCelebration(false), 4000);
+    }
+  };
+
+  // Check if timer completed while app was closed
+  useEffect(() => {
+    if (session && session.status === 'FASTING' && user) {
+      const now = new Date().getTime();
+      const end = new Date(session.targetEndTime).getTime();
+      
+      if (now >= end) {
+        // Timer finished while closed - auto-complete
+        handleMissionSuccess();
+        setSession(null);
+      }
+    }
+  }, [session?.id, user?.currentDay]);
+
   const handleOnboarding = (profile: UserProfile) => {
-    setUser({ 
-      ...profile, 
-      completedObjectives: [], 
+    setUser({
+      ...profile,
+      completedObjectives: [],
       waterRations: 0,
-      dailyLogs: {} 
+      dailyLogs: {},
+      completedFasts: []
     });
     setShowLanding(false);
   };
@@ -71,30 +157,26 @@ const App: React.FC = () => {
 
   const endFast = () => {
     if (!session) return;
-    if (new Date() >= new Date(session.targetEndTime)) {
+    const now = new Date().getTime();
+    const targetEnd = new Date(session.targetEndTime).getTime();
+    const timeRemaining = targetEnd - now;
+
+    // Dynamic grace periods based on day (hidden from user)
+    const getGracePeriod = (dayNumber: number): number => {
+      if (dayNumber === 1) return 15 * 60 * 1000; // 15 minutes for Day 1
+      return 2 * 60 * 60 * 1000; // 2 hours for Days 2-7
+    };
+
+    const gracePeriod = getGracePeriod(session.dayNumber);
+
+    // Success if past target time OR within grace period
+    if (timeRemaining <= gracePeriod) {
       handleMissionSuccess();
     } else {
-      alert("Mission Aborted. Return to perimeter.");
+      const minutesEarly = Math.ceil(timeRemaining / 60000);
+      alert(`Mission Aborted. Return to perimeter.\n\nYou need ${minutesEarly} more minutes to complete this fast.`);
     }
     setSession(null);
-  };
-
-  const handleMissionSuccess = () => {
-    if (!user) return;
-    const isDay7 = user.currentDay === 7;
-    setUser(prev => {
-      if (!prev) return null;
-      const nextDay = Math.min(7, prev.currentDay + (isDay7 ? 0 : 1));
-      return {
-        ...prev,
-        xp: prev.xp + 100,
-        level: Math.floor((prev.xp + 100) / 1000) + 1,
-        currentDay: nextDay,
-        streak: prev.completedHabits.includes(prev.currentDay.toString()) ? prev.streak + 1 : prev.streak,
-        waterRations: 0 
-      };
-    });
-    if (isDay7) setShowVictory(true);
   };
 
   const toggleObjective = (id: string) => {
@@ -138,9 +220,33 @@ const App: React.FC = () => {
 
   return (
     <>
-      <Layout 
-        user={user} 
-        activeTab={activeTab} 
+      {/* Unlock Celebration Overlay */}
+      {showUnlockCelebration && unlockedDay && (
+        <div className="fixed inset-0 z-[100] pointer-events-none flex items-center justify-center overflow-hidden bg-black/50 backdrop-blur-sm animate-in fade-in duration-500">
+          <div className="relative z-10 text-center animate-in zoom-in slide-in-from-bottom duration-700 px-6">
+            <div className="mb-6 flex justify-center">
+              <div className="w-32 h-32 rounded-full bg-green-500/20 flex items-center justify-center animate-pulse">
+                <svg className="w-20 h-20 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                </svg>
+              </div>
+            </div>
+            <h2 className="text-6xl md:text-8xl font-black italic uppercase font-mono text-green-500 neon-glow mb-4">
+              DAY {unlockedDay}<br/>UNLOCKED
+            </h2>
+            <p className="text-xl md:text-2xl font-mono text-white tracking-[0.3em] uppercase">
+              NEW SECTOR ACCESSIBLE
+            </p>
+            <p className="text-lg font-mono text-slate-400 mt-4 animate-pulse">
+              +100 XP AWARDED
+            </p>
+          </div>
+        </div>
+      )}
+
+      <Layout
+        user={user}
+        activeTab={activeTab}
         setActiveTab={setActiveTab}
       >
         {activeTab === 'dashboard' && (
@@ -184,6 +290,21 @@ const App: React.FC = () => {
               </div>
               <div className="sticky top-24 h-fit bg-black/40 border border-green-500/30 rounded-3xl p-6 space-y-4">
                 <h3 className="text-xl font-black uppercase font-mono italic text-green-500">Day {activeMapDay.dayNumber} Preview</h3>
+
+                {activeMapDay.dayNumber > user.currentDay && (
+                  <div className="p-4 bg-red-900/10 border border-red-500/30 rounded-xl">
+                    <div className="flex items-center gap-2 mb-2">
+                      <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                      </svg>
+                      <p className="text-[10px] font-black text-red-500 uppercase">SECTOR LOCKED</p>
+                    </div>
+                    <p className="text-xs text-slate-400">
+                      Complete Day {user.currentDay} to unlock Day {activeMapDay.dayNumber}
+                    </p>
+                  </div>
+                )}
+
                 <div className="p-4 bg-slate-900/50 rounded-xl border border-green-900/20">
                   <p className="text-[10px] font-black text-green-500 uppercase mb-1">Mission</p>
                   <p className="text-sm text-slate-200">{activeMapDay.habit}</p>
