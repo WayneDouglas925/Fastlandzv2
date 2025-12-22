@@ -81,14 +81,14 @@ const FastingTimer: React.FC<FastingTimerProps> = ({ session, onStart, onEnd }) 
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-8 bg-black/60 border-2 border-green-500/20 rounded-[2.5rem] relative overflow-hidden animate-in zoom-in duration-500">
+    <div className="flex flex-col items-center justify-center p-8 bg-black/60 border-2 border-cyan-500/20 rounded-[2.5rem] relative overflow-hidden animate-in zoom-in duration-500">
       {/* HUD Details */}
       <div className="absolute top-6 left-8 flex items-center gap-2">
          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-ping"></span>
          <span className="text-[9px] font-black uppercase font-mono text-green-500 tracking-widest">Live Protocol</span>
       </div>
       <div className="absolute top-6 right-8">
-         <div className="px-2 py-0.5 bg-green-500/10 border border-green-500/20 rounded text-[8px] font-bold text-green-500 uppercase font-mono tracking-tighter">Zone: {status.label}</div>
+         <div className="px-2 py-0.5 bg-green-500/10 border border-cyan-500/20 rounded text-[8px] font-bold text-green-500 uppercase font-mono tracking-tighter">Zone: {status.label}</div>
       </div>
 
       <div className="relative w-72 h-72 flex items-center justify-center mt-6">
@@ -125,7 +125,7 @@ const FastingTimer: React.FC<FastingTimerProps> = ({ session, onStart, onEnd }) 
           <p className="text-6xl font-black font-mono tracking-tighter tabular-nums text-white">
             {formatTime(timeLeft)}
           </p>
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-black/40 border border-green-500/30 rounded-full">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-black/40 border border-cyan-500/30 rounded-full">
             <svg className="w-3 h-3 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.334-.398-1.817a1 1 0 00-1.487-.876 6.721 6.721 0 00-3.186 5.73c0 3.517 2.826 6.269 5.732 6.269 1.096 0 2.108-.324 2.956-.882.528-.347 1.018-.749 1.415-1.122.413-.389.758-.775 1.019-1.133a10.055 10.055 0 001.734-4.246 1.207 1.207 0 00-.466-1.075 1.202 1.202 0 00-1.114-.14c-.334.114-.66.235-.973.351-.384.143-.762.284-1.144.407-.156.05-.316.1-.476.143a1.573 1.573 0 01-1.039-.368 1.583 1.583 0 01-.593-1.042c-.015-.226.012-.447.079-.662.13-.41.348-.808.577-1.15.228-.34.467-.621.642-.82a1 1 0 00-.13-1.402z" clipRule="evenodd" /></svg>
             <span className="text-[9px] font-black uppercase font-mono tracking-widest text-green-500">
                {status.label}
@@ -141,7 +141,7 @@ const FastingTimer: React.FC<FastingTimerProps> = ({ session, onStart, onEnd }) 
             <span>Zone Progress</span>
             <span>{progress.toFixed(0)}%</span>
          </div>
-         <div className="h-1.5 w-full bg-slate-900 rounded-full overflow-hidden border border-green-900/20">
+         <div className="h-1.5 w-full bg-slate-900 rounded-full overflow-hidden border border-cyan-500/15">
             <div 
               className="h-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)] transition-all duration-1000 ease-linear"
               style={{ width: `${progress}%` }}

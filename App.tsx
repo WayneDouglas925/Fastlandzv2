@@ -244,6 +244,25 @@ const App: React.FC = () => {
         </div>
       )}
 
+      {/* TESTING MODE: Day Selector */}
+      <div className="fixed top-4 right-4 z-50 bg-yellow-500/90 text-black p-3 rounded-xl border-2 border-yellow-600 shadow-xl">
+        <p className="text-xs font-black uppercase mb-2">🧪 Testing Mode</p>
+        <div className="flex gap-1">
+          {[1, 2, 3, 4, 5, 6, 7].map(day => (
+            <button
+              key={day}
+              onClick={() => {
+                setUser(prev => ({ ...prev!, currentDay: day }));
+                setActiveTab('dashboard');
+              }}
+              className={`w-8 h-8 rounded font-bold text-sm ${user.currentDay === day ? 'bg-black text-yellow-500' : 'bg-yellow-600 text-white hover:bg-yellow-700'}`}
+            >
+              {day}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <Layout
         user={user}
         activeTab={activeTab}
@@ -274,11 +293,12 @@ const App: React.FC = () => {
               <div className="relative space-y-4">
                  <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-green-900/20 z-0"></div>
                  {CHALLENGE_DAYS.map((day, idx) => {
-                   const isLocked = day.dayNumber > user.currentDay;
+                   // TESTING MODE: Unlock all days for testing
+                   const isLocked = false; // day.dayNumber > user.currentDay;
                    const isSelected = (selectedMapDay || user.currentDay) === day.dayNumber;
                    const isDone = day.dayNumber < user.currentDay;
                    return (
-                     <button key={idx} onClick={() => setSelectedMapDay(day.dayNumber)} className={`w-full relative z-10 flex items-center gap-6 p-4 rounded-2xl border transition-all text-left ${isSelected ? 'bg-green-500/20 border-green-500 ring-2 ring-green-500/20' : isLocked ? 'bg-slate-900/30 border-slate-800 opacity-60' : 'bg-green-900/5 border-green-900/20'}`}>
+                     <button key={idx} onClick={() => setSelectedMapDay(day.dayNumber)} className={`w-full relative z-10 flex items-center gap-6 p-4 rounded-2xl border transition-all text-left ${isSelected ? 'bg-green-500/20 border-green-500 ring-2 ring-green-500/20' : isLocked ? 'bg-slate-900/30 border-slate-800 opacity-60' : 'bg-green-900/5 border-cyan-500/15'}`}>
                         <div className={`w-12 h-12 rounded-full flex items-center justify-center font-black font-mono text-xl shrink-0 ${isSelected ? 'bg-green-500 text-black' : isDone ? 'bg-green-900 text-green-400' : 'bg-slate-800 text-slate-500'}`}>{isDone ? '✓' : day.dayNumber}</div>
                         <div className="flex-grow">
                            <h4 className={`font-bold uppercase tracking-widest text-sm ${isSelected ? 'text-green-400' : ''}`}>{day.title}</h4>
@@ -288,9 +308,10 @@ const App: React.FC = () => {
                    );
                  })}
               </div>
-              <div className="sticky top-24 h-fit bg-black/40 border border-green-500/30 rounded-3xl p-6 space-y-4">
+              <div className="sticky top-24 h-fit bg-black/40 border border-cyan-500/30 rounded-3xl p-6 space-y-4">
                 <h3 className="text-xl font-black uppercase font-mono italic text-green-500">Day {activeMapDay.dayNumber} Preview</h3>
 
+                {/* TESTING MODE: Hide locked message
                 {activeMapDay.dayNumber > user.currentDay && (
                   <div className="p-4 bg-red-900/10 border border-red-500/30 rounded-xl">
                     <div className="flex items-center gap-2 mb-2">
@@ -304,12 +325,13 @@ const App: React.FC = () => {
                     </p>
                   </div>
                 )}
+                */}
 
-                <div className="p-4 bg-slate-900/50 rounded-xl border border-green-900/20">
+                <div className="p-4 bg-slate-900/50 rounded-xl border border-cyan-500/15">
                   <p className="text-[10px] font-black text-green-500 uppercase mb-1">Mission</p>
                   <p className="text-sm text-slate-200">{activeMapDay.habit}</p>
                 </div>
-                <div className="p-4 bg-slate-900/50 rounded-xl border border-green-900/20">
+                <div className="p-4 bg-slate-900/50 rounded-xl border border-cyan-500/15">
                   <p className="text-[10px] font-black text-green-500 uppercase mb-1">Objective</p>
                   <p className="text-xs text-slate-400">{activeMapDay.objective}</p>
                 </div>
@@ -325,7 +347,7 @@ const App: React.FC = () => {
               <p className="text-slate-500 font-medium">Educational content for metabolic survival training.</p>
             </div>
             
-            <div className="bg-black/40 border border-green-500/30 rounded-3xl p-8 space-y-6">
+            <div className="bg-black/40 border border-cyan-500/30 rounded-3xl p-8 space-y-6">
                <div className="flex items-center justify-between">
                   <h3 className="text-2xl font-bold uppercase tracking-widest font-mono text-green-500">
                      Day {currentDayConfig.dayNumber}: {currentDayConfig.title}
@@ -345,7 +367,7 @@ const App: React.FC = () => {
                </div>
                
                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="p-6 bg-slate-900/50 border border-green-900/20 rounded-2xl">
+                  <div className="p-6 bg-slate-900/50 border border-cyan-500/15 rounded-2xl">
                      <span className="text-[10px] font-black uppercase text-green-500 tracking-widest block mb-2">
                         Physiological Impact
                      </span>
@@ -354,7 +376,7 @@ const App: React.FC = () => {
                      </p>
                   </div>
                   
-                  <div className="p-6 bg-slate-900/50 border border-green-900/20 rounded-2xl">
+                  <div className="p-6 bg-slate-900/50 border border-cyan-500/15 rounded-2xl">
                      <span className="text-[10px] font-black uppercase text-green-500 tracking-widest block mb-2">
                         Survival Tip
                      </span>
@@ -373,7 +395,7 @@ const App: React.FC = () => {
                   </p>
                </div>
                
-               <div className="p-6 bg-black/60 border border-green-900/20 rounded-2xl">
+               <div className="p-6 bg-black/60 border border-cyan-500/15 rounded-2xl">
                   <span className="text-[10px] font-black uppercase text-green-500 tracking-widest block mb-3">
                      Field Advice
                   </span>
@@ -383,10 +405,10 @@ const App: React.FC = () => {
                </div>
 
                {/* Deep Dive Educational Section */}
-               <div className="border-t border-green-900/30 pt-6">
+               <div className="border-t border-cyan-500/20 pt-6">
                   <button
                      onClick={() => setShowDeepDive(!showDeepDive)}
-                     className="w-full flex items-center justify-between p-6 bg-green-500/5 hover:bg-green-500/10 border-2 border-green-500/30 hover:border-green-500/50 rounded-2xl transition-all group"
+                     className="w-full flex items-center justify-between p-6 bg-green-500/5 hover:bg-green-500/10 border-2 border-cyan-500/30 hover:border-green-500/50 rounded-2xl transition-all group"
                   >
                      <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center group-hover:bg-green-500/30 transition-colors">
@@ -410,7 +432,7 @@ const App: React.FC = () => {
 
                   {showDeepDive && (
                      <div className="mt-6 p-8 bg-slate-900/50 border border-green-500/20 rounded-2xl animate-in slide-in-from-top duration-500">
-                        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-green-900/30">
+                        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-cyan-500/20">
                            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                            <span className="text-[10px] font-black uppercase text-green-500 tracking-[0.3em]">
                               Educational Content - For Informational Purposes Only
@@ -491,7 +513,7 @@ const App: React.FC = () => {
 };
 
 const StatCard = ({ label, value, color }: { label: string; value: string; color?: string }) => (
-  <div className="bg-black/40 border border-green-900/20 p-4 rounded-xl text-center">
+  <div className="bg-black/40 border border-cyan-500/15 p-4 rounded-xl text-center">
     <p className="text-[10px] font-mono uppercase text-slate-500 mb-1">{label}</p>
     <p className={`text-xl font-black font-mono ${color || 'text-white'}`}>{value}</p>
   </div>

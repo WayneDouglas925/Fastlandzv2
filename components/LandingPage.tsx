@@ -178,7 +178,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
       </section>
 
       {/* The Crisis (Why IF) */}
-      <section id="intel" className="py-24 px-6 border-y border-green-900/20 bg-black/20">
+      <section id="intel" className="py-24 px-6 border-y border-cyan-500/15 bg-black/20">
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-16 items-center">
           <div className="space-y-6">
             <h2 className="text-4xl font-black italic font-mono uppercase tracking-tight">The Problem: <br/><span className="text-red-500/80">Constant Scavenging</span></h2>
@@ -190,7 +190,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
                <FeatureRow icon="☣️" title="The Sludge Build-up" desc="Without a break, your cells never clean out the broken proteins. We call this cellular debris 'Metabolic Sludge'." />
             </div>
           </div>
-          <div className="bg-green-900/5 border border-green-500/20 p-8 rounded-[2.5rem] relative overflow-hidden">
+          <div className="bg-green-900/5 border border-cyan-500/20 p-8 rounded-[2.5rem] relative overflow-hidden">
              <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
                 <svg className="w-48 h-48" fill="currentColor" viewBox="0 0 24 24">
                    <path d="M13 2L3 14h9v8l10-12h-9l1 1-1-1z" />
@@ -248,7 +248,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
       </section>
 
       {/* Final CTA */}
-      <footer className="py-32 px-6 text-center border-t border-green-900/30">
+      <footer className="py-32 px-6 text-center border-t border-cyan-500/20">
          <div className="max-w-xl mx-auto space-y-10">
             <div className="space-y-4">
               <h2 className="text-5xl font-black italic font-mono uppercase leading-none">THE OASIS <br/> IS WAITING.</h2>
@@ -272,7 +272,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
                     placeholder="your.email@wasteland.com"
                     required
                     disabled={isSubmitting}
-                    className="flex-1 px-4 py-3 bg-black/50 border border-green-900/30 rounded-lg text-white placeholder-slate-600 font-mono text-sm focus:outline-none focus:border-green-500 transition-colors disabled:opacity-50"
+                    className="flex-1 px-4 py-3 bg-black/50 border border-cyan-500/20 rounded-lg text-white placeholder-slate-600 font-mono text-sm focus:outline-none focus:border-green-500 transition-colors disabled:opacity-50"
                   />
                   <button
                     type="submit"
@@ -324,7 +324,7 @@ const FeatureRow = ({ icon, title, desc }: { icon: string; title: string; desc: 
 );
 
 const JourneyStep = ({ day, title, desc }: { day: string; title: string; desc: string }) => (
-  <div className="p-6 bg-black border border-green-900/30 rounded-3xl hover:border-green-500/50 transition-all group">
+  <div className="p-6 bg-black border border-cyan-500/20 rounded-3xl hover:border-green-500/50 transition-all group">
      <div className="text-[10px] font-mono text-green-500 mb-2 font-bold uppercase tracking-widest">Day {day}</div>
      <h4 className="text-xl font-bold mb-3 italic uppercase font-mono group-hover:text-green-400 transition-colors">{title}</h4>
      <p className="text-sm text-slate-500 leading-relaxed">{desc}</p>

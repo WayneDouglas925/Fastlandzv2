@@ -73,7 +73,7 @@ const Journal: React.FC<JournalProps> = ({ user, onSaveLog }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="space-y-6">
-          <div className="bg-black/40 border border-green-900/30 p-8 rounded-[2rem] space-y-6">
+          <div className="bg-black/40 border border-cyan-500/20 p-8 rounded-[2rem] space-y-6">
             <h3 className="font-black uppercase tracking-widest text-sm font-mono text-green-500">Bio-Status Matrix</h3>
             
             <div className="space-y-4">
@@ -97,31 +97,31 @@ const Journal: React.FC<JournalProps> = ({ user, onSaveLog }) => {
                   value={formData.mood}
                   onChange={(e) => setFormData({...formData, mood: e.target.value})}
                   placeholder="Calm, anxious, focused, sharp..."
-                  className="w-full bg-black/60 border border-green-900/30 rounded-xl p-4 text-sm font-mono text-slate-200 focus:outline-none focus:border-green-500 transition-all"
+                  className="w-full bg-black/60 border border-cyan-500/20 rounded-xl p-4 text-sm font-mono text-slate-200 focus:outline-none focus:border-green-500 transition-all"
                 />
               </div>
             </div>
           </div>
 
-          <div className="bg-black/40 border border-green-900/30 p-8 rounded-[2rem] space-y-4">
+          <div className="bg-black/40 border border-cyan-500/20 p-8 rounded-[2rem] space-y-4">
             <h3 className="font-black uppercase tracking-widest text-sm font-mono text-green-500">Cognitive Intake (Lessons)</h3>
             <textarea 
               value={formData.lessons}
               onChange={(e) => setFormData({...formData, lessons: e.target.value})}
               placeholder="What have you learned about your body or mind today?"
-              className="w-full h-40 bg-black/60 border border-green-900/30 rounded-xl p-4 text-sm font-mono text-slate-200 focus:outline-none focus:border-green-500 transition-all resize-none"
+              className="w-full h-40 bg-black/60 border border-cyan-500/20 rounded-xl p-4 text-sm font-mono text-slate-200 focus:outline-none focus:border-green-500 transition-all resize-none"
             />
           </div>
         </div>
 
         <div className="space-y-6">
-          <div className="bg-black/40 border border-green-900/30 p-8 rounded-[2rem] space-y-4">
+          <div className="bg-black/40 border border-cyan-500/20 p-8 rounded-[2rem] space-y-4">
             <h3 className="font-black uppercase tracking-widest text-sm font-mono text-green-500">Fuel Allocation (Meals)</h3>
             <textarea 
               value={formData.meals}
               onChange={(e) => setFormData({...formData, meals: e.target.value})}
               placeholder="Record all intake during your feeding window..."
-              className="w-full h-64 bg-black/60 border border-green-900/30 rounded-xl p-4 text-sm font-mono text-slate-200 focus:outline-none focus:border-green-500 transition-all resize-none"
+              className="w-full h-64 bg-black/60 border border-cyan-500/20 rounded-xl p-4 text-sm font-mono text-slate-200 focus:outline-none focus:border-green-500 transition-all resize-none"
             />
           </div>
 

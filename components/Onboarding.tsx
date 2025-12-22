@@ -156,13 +156,13 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
               <p className="text-slate-400 text-sm">A phased extraction of metabolic toxins.</p>
             </div>
 
-            <div className="space-y-4 bg-black/40 border border-green-900/20 p-6 rounded-3xl">
+            <div className="space-y-4 bg-black/40 border border-cyan-500/15 p-6 rounded-3xl">
               <DirectiveStep num="01-02" title="The Reset" color="bg-green-900/50" />
               <DirectiveStep num="03-04" title="The Adaptation" color="bg-green-700/50" />
               <DirectiveStep num="05-06" title="The Cleanse" color="bg-green-500/50" />
               <DirectiveStep num="07" title="The Apex Shift" color="bg-green-400/80" />
               
-              <div className="pt-4 border-t border-green-900/30 mt-4">
+              <div className="pt-4 border-t border-cyan-500/20 mt-4">
                 <p className="text-[10px] text-slate-500 uppercase leading-relaxed">
                   * Note: Each day introduces a new microhabit. Failure to complete a habit will halt your streak progression.
                 </p>
@@ -179,7 +179,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
         )}
 
         {step === 5 && (
-          <div className="space-y-8 animate-in slide-in-from-right duration-500 bg-black/60 border border-green-500/20 p-8 rounded-[2.5rem] shadow-2xl">
+          <div className="space-y-8 animate-in slide-in-from-right duration-500 bg-black/60 border border-cyan-500/20 p-8 rounded-[2.5rem] shadow-2xl">
             <div className="text-center space-y-2">
                <h2 className="text-4xl font-black uppercase italic tracking-tighter text-green-500">Final Identity</h2>
                <p className="text-slate-500 text-xs tracking-widest uppercase">Seal your fate in the Fastlandz database.</p>
@@ -244,7 +244,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
 const ArchetypeCard = ({ active, onClick, label, sub, img }: { active: boolean; onClick: () => void; label: string; sub: string; img: string }) => (
   <button 
     onClick={onClick}
-    className={`p-6 rounded-[2rem] border-2 transition-all flex flex-col items-center gap-4 text-center ${active ? 'bg-green-500/10 border-green-500' : 'bg-black/40 border-green-900/20'}`}
+    className={`p-6 rounded-[2rem] border-2 transition-all flex flex-col items-center gap-4 text-center ${active ? 'bg-green-500/10 border-green-500' : 'bg-black/40 border-cyan-500/15'}`}
   >
     <div className={`w-24 h-24 rounded-full border-2 overflow-hidden bg-slate-800/50 ${active ? 'border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.3)]' : 'border-slate-800 grayscale'}`}>
       <img src={img} className="w-full h-full object-cover" alt={label} />
@@ -259,7 +259,7 @@ const ArchetypeCard = ({ active, onClick, label, sub, img }: { active: boolean; 
 const ExperienceOption = ({ active, onClick, title, desc }: { active: boolean; onClick: () => void; title: string; desc: string }) => (
   <button 
     onClick={onClick}
-    className={`w-full p-5 rounded-2xl border-2 transition-all text-left flex items-start gap-4 ${active ? 'bg-green-500/10 border-green-500' : 'bg-black/20 border-green-900/20 hover:border-green-500/30'}`}
+    className={`w-full p-5 rounded-2xl border-2 transition-all text-left flex items-start gap-4 ${active ? 'bg-green-500/10 border-green-500' : 'bg-black/20 border-cyan-500/15 hover:border-green-500/30'}`}
   >
     <div className={`w-6 h-6 rounded-full border-2 mt-1 flex items-center justify-center shrink-0 ${active ? 'border-green-500' : 'border-slate-700'}`}>
       {active && <div className="w-2.5 h-2.5 bg-green-500 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.8)]"></div>}
@@ -286,7 +286,7 @@ const DirectiveStep = ({ num, title, color }: { num: string; title: string; colo
 const ToggleRow = ({ active, onClick, label, sub }: { active: boolean; onClick: () => void; label: string; sub: string }) => (
   <div 
     onClick={onClick}
-    className="flex items-center justify-between p-4 bg-black/40 border border-green-900/20 rounded-2xl cursor-pointer hover:bg-black/60 transition-colors"
+    className="flex items-center justify-between p-4 bg-black/40 border border-cyan-500/15 rounded-2xl cursor-pointer hover:bg-black/60 transition-colors"
   >
     <div className="flex flex-col">
       <span className={`text-xs font-black uppercase ${active ? 'text-green-400' : 'text-slate-500'}`}>{label}</span>

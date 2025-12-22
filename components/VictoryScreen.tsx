@@ -31,7 +31,7 @@ const VictoryScreen: React.FC<VictoryScreenProps> = ({ onReset }) => {
               <p className="text-lg font-bold uppercase tracking-widest text-green-300">Welcome to the Hunger Zone, Legend.</p>
            </div>
 
-           <p className="text-slate-500 italic max-w-md mx-auto leading-relaxed border-x border-green-900/20 px-4">
+           <p className="text-slate-500 italic max-w-md mx-auto leading-relaxed border-x border-cyan-500/15 px-4">
              "Your metabolic engine is now self-sustaining. You have purged the sludge. The wasteland belongs to you."
            </p>
 
