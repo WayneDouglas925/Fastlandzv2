@@ -244,25 +244,6 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* TESTING MODE: Day Selector */}
-      <div className="fixed top-4 right-4 z-50 bg-yellow-500/90 text-black p-3 rounded-xl border-2 border-yellow-600 shadow-xl">
-        <p className="text-xs font-black uppercase mb-2">🧪 Testing Mode</p>
-        <div className="flex gap-1">
-          {[1, 2, 3, 4, 5, 6, 7].map(day => (
-            <button
-              key={day}
-              onClick={() => {
-                setUser(prev => ({ ...prev!, currentDay: day }));
-                setActiveTab('dashboard');
-              }}
-              className={`w-8 h-8 rounded font-bold text-sm ${user.currentDay === day ? 'bg-black text-yellow-500' : 'bg-yellow-600 text-white hover:bg-yellow-700'}`}
-            >
-              {day}
-            </button>
-          ))}
-        </div>
-      </div>
-
       <Layout
         user={user}
         activeTab={activeTab}
@@ -293,8 +274,7 @@ const App: React.FC = () => {
               <div className="relative space-y-4">
                  <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-green-900/20 z-0"></div>
                  {CHALLENGE_DAYS.map((day, idx) => {
-                   // TESTING MODE: Unlock all days for testing
-                   const isLocked = false; // day.dayNumber > user.currentDay;
+                   const isLocked = day.dayNumber > user.currentDay;
                    const isSelected = (selectedMapDay || user.currentDay) === day.dayNumber;
                    const isDone = day.dayNumber < user.currentDay;
                    return (
@@ -311,7 +291,6 @@ const App: React.FC = () => {
               <div className="sticky top-24 h-fit bg-black/40 border border-cyan-500/30 rounded-3xl p-6 space-y-4">
                 <h3 className="text-xl font-black uppercase font-mono italic text-green-500">Day {activeMapDay.dayNumber} Preview</h3>
 
-                {/* TESTING MODE: Hide locked message
                 {activeMapDay.dayNumber > user.currentDay && (
                   <div className="p-4 bg-red-900/10 border border-red-500/30 rounded-xl">
                     <div className="flex items-center gap-2 mb-2">
@@ -325,7 +304,6 @@ const App: React.FC = () => {
                     </p>
                   </div>
                 )}
-                */}
 
                 <div className="p-4 bg-slate-900/50 rounded-xl border border-cyan-500/15">
                   <p className="text-[10px] font-black text-green-500 uppercase mb-1">Mission</p>
