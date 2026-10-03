@@ -24,7 +24,11 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
         level: experience === 'legend' ? 2 : 1,
         hasOnboarded: true,
         streak: 0,
-        completedHabits: []
+        completedHabits: [],
+        completedObjectives: [],
+        waterRations: 0,
+        dailyLogs: {},
+        completedFasts: []
       });
     }
   };
