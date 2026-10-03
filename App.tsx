@@ -7,7 +7,7 @@ import LandingPage from './components/LandingPage';
 import VictoryScreen from './components/VictoryScreen';
 import Journal from './components/Journal';
 import { UserProfile, FastSession, DailyLog } from './types';
-import { CHALLENGE_DAYS } from './constants';
+import { CHALLENGE_DAYS, levelForXp } from './constants';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -103,7 +103,7 @@ const App: React.FC = () => {
       return {
         ...prev,
         xp: prev.xp + 100,
-        level: Math.floor((prev.xp + 100) / 1000) + 1,
+        level: levelForXp(prev.xp + 100),
         currentDay: nextDay,
         streak: newStreak,
         waterRations: 0,
@@ -206,6 +206,7 @@ const App: React.FC = () => {
     setUser(prev => prev ? {
       ...prev,
       xp: prev.xp + 25,
+      level: levelForXp(prev.xp + 25),
       completedHabits: [...prev.completedHabits, dayNumber.toString()]
     } : null);
   };
@@ -485,7 +486,7 @@ const App: React.FC = () => {
                 </div>
                 <div>
                    <h2 className="text-3xl font-black uppercase font-mono italic tracking-tight">{user.warriorName}</h2>
-                   <p className="text-slate-500 font-mono uppercase text-xs tracking-widest">Wasteland Survivor • Level {user.level}</p>
+                   <p className="text-slate-500 font-mono uppercase text-xs tracking-widest">Wasteland Survivor • Level {levelForXp(user.xp)}</p>
                 </div>
              </div>
              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
