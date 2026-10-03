@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { UserProfile } from '../types';
+import { levelForXp } from '../constants';
 
 interface OnboardingProps {
   onComplete: (profile: UserProfile) => void;
@@ -16,12 +17,13 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
 
   const handleFinish = () => {
     if (name && acceptRules) {
+      const startingXp = experience === 'legend' ? 500 : experience === 'survivor' ? 250 : 0;
       onComplete({
         warriorName: name,
         characterType: characterType,
         currentDay: 1,
-        xp: experience === 'legend' ? 500 : experience === 'survivor' ? 250 : 0,
-        level: experience === 'legend' ? 2 : 1,
+        xp: startingXp,
+        level: levelForXp(startingXp),
         hasOnboarded: true,
         streak: 0,
         completedHabits: [],

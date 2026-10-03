@@ -9,6 +9,11 @@ export const COLORS = {
   textMuted: '#94a3b8',
 };
 
+export const XP_PER_LEVEL = 500;
+
+// Single source of truth for level; derive it from XP rather than trusting stored values
+export const levelForXp = (xp: number) => Math.floor(xp / XP_PER_LEVEL) + 1;
+
 export const CHALLENGE_DAYS: DayConfig[] = [
   {
     dayNumber: 1,

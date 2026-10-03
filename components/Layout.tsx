@@ -2,6 +2,7 @@
 import React from 'react';
 import { UserProfile } from '../types';
 import Logo from './Logo';
+import { XP_PER_LEVEL, levelForXp } from '../constants';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -40,11 +41,11 @@ const Layout: React.FC<LayoutProps> = ({ children, user, activeTab, setActiveTab
             )}
             {/* XP Progress */}
             <div className="flex flex-col items-end">
-              <span className="text-[10px] uppercase font-mono text-green-500 font-bold">XP Lvl {user.level}</span>
+              <span className="text-[10px] uppercase font-mono text-green-500 font-bold">XP Lvl {levelForXp(user.xp)}</span>
               <div className="w-24 h-1.5 bg-green-900/30 rounded-full overflow-hidden border border-green-900/50">
                 <div
                   className="h-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] transition-all duration-500"
-                  style={{ width: `${(user.xp % 100)}%` }}
+                  style={{ width: `${((user.xp % XP_PER_LEVEL) / XP_PER_LEVEL) * 100}%` }}
                 ></div>
               </div>
             </div>
