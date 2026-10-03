@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
 import Onboarding from './components/Onboarding';
@@ -20,6 +20,9 @@ const App: React.FC = () => {
   const [showDeepDive, setShowDeepDive] = useState(false);
   const [showUnlockCelebration, setShowUnlockCelebration] = useState(false);
   const [unlockedDay, setUnlockedDay] = useState<number | null>(null);
+  // Session ids already completed, so the timer's auto-end and the
+  // "finished while closed" check can't both award the same fast.
+  const completedSessionIds = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     try {
@@ -76,13 +79,15 @@ const App: React.FC = () => {
     }
   }, [session]);
 
-  const handleMissionSuccess = () => {
+  const handleMissionSuccess = (dayNumber: number) => {
     if (!user) return;
-    const isDay7 = user.currentDay === 7;
+    const isDay7 = dayNumber === 7;
     const willUnlockNewDay = !isDay7;
 
     setUser(prev => {
       if (!prev) return null;
+      // Ignore a completion for a day the user has already moved past
+      if (prev.currentDay !== dayNumber) return prev;
       const nextDay = Math.min(7, prev.currentDay + (isDay7 ? 0 : 1));
       const currentDayKey = prev.currentDay.toString();
 
@@ -110,10 +115,18 @@ const App: React.FC = () => {
       setShowVictory(true);
     } else if (willUnlockNewDay) {
       // Show unlock celebration for next day
-      setUnlockedDay(user.currentDay + 1);
+      setUnlockedDay(dayNumber + 1);
       setShowUnlockCelebration(true);
       setTimeout(() => setShowUnlockCelebration(false), 4000);
     }
+  };
+
+  // Single completion path for a fast; safe to call more than once per session
+  const completeFast = (completed: FastSession) => {
+    if (completedSessionIds.current.has(completed.id)) return;
+    completedSessionIds.current.add(completed.id);
+    handleMissionSuccess(completed.dayNumber);
+    setSession(null);
   };
 
   // Check if timer completed while app was closed
@@ -124,8 +137,7 @@ const App: React.FC = () => {
       
       if (now >= end) {
         // Timer finished while closed - auto-complete
-        handleMissionSuccess();
-        setSession(null);
+        completeFast(session);
       }
     }
   }, [session?.id, user?.currentDay]);
@@ -156,7 +168,7 @@ const App: React.FC = () => {
   };
 
   const endFast = () => {
-    if (!session) return;
+    if (!session || completedSessionIds.current.has(session.id)) return;
     const now = new Date().getTime();
     const targetEnd = new Date(session.targetEndTime).getTime();
     const timeRemaining = targetEnd - now;
@@ -171,12 +183,12 @@ const App: React.FC = () => {
 
     // Success if past target time OR within grace period
     if (timeRemaining <= gracePeriod) {
-      handleMissionSuccess();
+      completeFast(session);
     } else {
       const minutesEarly = Math.ceil(timeRemaining / 60000);
       alert(`Mission Aborted. Return to perimeter.\n\nYou need ${minutesEarly} more minutes to complete this fast.`);
+      setSession(null);
     }
-    setSession(null);
   };
 
   const toggleObjective = (id: string) => {
